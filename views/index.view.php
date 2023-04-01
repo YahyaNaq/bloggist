@@ -6,66 +6,67 @@
 
 
 <!-- Main Content-->
-<div class="container px-4 px-lg-5">
-    <div class="row gx-4 gx-lg-5 justify-content-center">
-        <div class="col-md-10 col-lg-8 col-xl-7">
+<div class="container">
+    <div class="mx-28 max-w-2xl py-6 sm:px-6 lg:px-8">
+        <!-- <div class="">
+            <input
+            type="search" placeholder="Search by title"
+            id="searchInput" class="" 
+            aria-label="Search"
+            />
+        </div> -->
+        <div id="post-container" class="">
+        <!-- DISCLAIMER: $post != $_POST -->
+        <?php foreach($posts as $post): ?>
             <!-- Post preview-->
-            <div class="post-preview">
-                <a href="post.html">
-                    <h2 class="post-title">Man must explore, and this is exploration at its greatest</h2>
-                    <h3 class="post-subtitle">Problems look mighty small from 150 miles up</h3>
+            <div id="" class="">
+                <a href="/post?id=<?= $post['id'] ?>">
+                    <h2 class="text-3xl font-bold mb-2"><?= $post['title'] ?></h2>
+                    <h4 class="text-xl"><?= str_split($post['body'], 94)[0] ?>...</h4>
                 </a>
-                <p class="post-meta">
+                <p class="mt-2">
                     Posted by
-                    <a href="#!">Start Bootstrap</a>
-                    on September 24, 2022
+                    <a href="#!" class="font-semibold"><?= $post['full_name'] ?></a>
+                    on <span class="font-semibold"><?= $post['posted_on'] ?></span>
                 </p>
+                <div class="flex gap-2 mt-4 text-sm font-medium text-gray-800">
+                    <div>like <?= $post['likes']; ?></div>
+                    <div>comment <?= $post['likes']; ?></div>
+                </div>
             </div>
             <!-- Divider-->
             <hr class="my-4" />
-            <!-- Post preview-->
-            <div class="post-preview">
-                <a href="post.html"><h2 class="post-title">I believe every human has a finite number of heartbeats. I don't intend to waste any of mine.</h2></a>
-                <p class="post-meta">
-                    Posted by
-                    <a href="#!">Start Bootstrap</a>
-                    on September 18, 2022
-                </p>
-            </div>
-            <!-- Divider-->
-            <hr class="my-4" />
-            <!-- Post preview-->
-            <div class="post-preview">
-                <a href="post.html">
-                    <h2 class="post-title">Science has not yet mastered prophecy</h2>
-                    <h3 class="post-subtitle">We predict too much for the next year and yet far too little for the next ten.</h3>
-                </a>
-                <p class="post-meta">
-                    Posted by
-                    <a href="#!">Start Bootstrap</a>
-                    on August 24, 2022
-                </p>
-            </div>
-            <!-- Divider-->
-            <hr class="my-4" />
-            <!-- Post preview-->
-            <div class="post-preview">
-                <a href="post.html">
-                    <h2 class="post-title">Failure is not an option</h2>
-                    <h3 class="post-subtitle">Many say exploration is part of our destiny, but it’s actually our duty to future generations.</h3>
-                </a>
-                <p class="post-meta">
-                    Posted by
-                    <a href="#!">Start Bootstrap</a>
-                    on July 8, 2022
-                </p>
-            </div>
-            <!-- Divider-->
-            <hr class="my-4" />
+        <?php endforeach; ?>
             <!-- Pager-->
-            <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+            <button id="load-more" class="mb-12">
+                <a href="#" data-page="2" class="font-medium text-md uppercase px-4 py-3 bg-indigo-700 text-white rounded-sm">Older Posts </a>
+            </button>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+    $("#load-more").click(function() {
+        var page = $(this).data("page");
+
+        $.ajax({
+        url: "load_more.php",
+        method: "GET",
+        data: { page: page },
+        success: function(html) {
+            // Append the HTML to the comments container
+            $("#post-container").append(html);
+            
+            // Update the "older posts" button data attribute
+            $("#load-more").data("page", page + 1);
+        },
+        error: function() {
+            alert("Error loading comments.");
+        }
+        });
+    });
+    });
+</script>
 
 <?php require view('partials\footer.php'); ?>

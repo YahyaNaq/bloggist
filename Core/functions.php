@@ -9,10 +9,10 @@ function dd($value) {
     die();
 }
 
-function urlIs($heading,$value) {
-    $current="bg-gray-900 text-white";
-    $others="text-gray-300";    
-    return $heading == $value ? $current : $others;
+function urlIs($key, $value, $dashboard_nav= false) {
+    $current= $dashboard_nav ? "bg-gray-800 text-white font-semibold" : "bg-gray-900 text-white";
+    $others="text-gray-300";
+    return $key == $value ? $current : $others;
 }
 
 function authorize($condition, $code=Response::FORBIDDEN) {
@@ -33,4 +33,19 @@ function abort($code=Response::NOT_FOUND) {
     http_response_code($code);
     require view("{$code}.php");
     die();
+}
+
+function login($user) {
+    $_SESSION['user'] = $user;
+
+    session_regenerate_id(true);
+
+}
+
+function logout() {
+    $_SESSION=[];
+    session_destroy();
+
+    $params= session_get_cookie_params();
+    setcookie("PHPSESSID", "", time()-3600, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
 }

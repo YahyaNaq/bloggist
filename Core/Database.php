@@ -10,15 +10,15 @@ class Database {
 
     public function __construct($config, $user='root', $pwd='', $options= [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC])
     {
-        $dsn = http_build_query($config, '', ';');
+        $dsn = "mysql:" . http_build_query($config, '', ';');
 
-        $this->conn = new PDO($config, $user, $pwd, $options);
+        $this->conn = new PDO($dsn, $user, $pwd, $options);
     }
 
-    public function query($query)
+    public function query($query, $params=[])
     {
         $this->statement=$this->conn->prepare($query);
-        $this->statement->execute();
+        $this->statement->execute($params);
         return $this;
     }
 
@@ -29,8 +29,8 @@ class Database {
 
     public function findOrFail()
     {
-        $result=$this->statement->find();
-        if ! ($result) {
+        $result=$this->find();
+        if (! $result) {
             abort();
         }
 
